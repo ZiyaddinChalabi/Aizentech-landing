@@ -147,6 +147,26 @@ if (form) {
         btn.disabled = true;
         if (text) text.textContent = 'Göndərilir...';
 
+        const submission = {
+            id:      Date.now().toString(),
+            date:    new Date().toISOString(),
+            name:    form.name?.value || form.querySelector('[name="name"]')?.value || '',
+            email:   form.email?.value || form.querySelector('[name="email"]')?.value || '',
+            company: form.querySelector('[name="company"]')?.value || '',
+            service: form.querySelector('[name="service"]')?.value || '',
+            message: form.querySelector('[name="message"]')?.value || '',
+            status:  'new',
+        };
+
+        /* save to localStorage so admin panel picks it up */
+        try {
+            const list = JSON.parse(localStorage.getItem('submissions') || '[]');
+            list.push(submission);
+            localStorage.setItem('submissions', JSON.stringify(list));
+            /* also trigger storage event for open admin tabs */
+            localStorage.setItem('newSubmission', JSON.stringify(submission));
+        } catch (_) {}
+
         setTimeout(() => {
             btn.disabled = false;
             if (text) text.textContent = '✓ Göndərildi!';
